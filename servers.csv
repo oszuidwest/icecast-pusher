@@ -1,0 +1,4 @@
+hostname;user;password;mountpoint
+icecast.zuidwestfm.nl;admin;hackme;/zuidwest.mp3
+icecast.zuidwestfm.nl;admin;hackme;/zuidwest.aac
+backupicecast.zuidwestfm.nl;admin;hackme;/fallback
