@@ -1,6 +1,6 @@
 <?php
 
-$metadata = file_get_contents('http://zuidwestupdate.nl/rds/rds_programma.php');
+$metadata = file_get_contents('https://www.zuidwestupdate.nl/rds/rds_programma.php');
 $serversPath = __DIR__ . '/servers.csv';
 if(!file_exists($serversPath)) {
     error_log('servers.csv doesn\'t exist');
@@ -21,7 +21,7 @@ foreach($servers as $server) {
     }
     
     list($hostName, $port, $username, $password, $mountPoint) = str_getcsv($server, ';');
-    $url = 'http://' . $hostName . ':' . $port . '/admin/metadata.xsl?' . http_build_query(['song' => $metadata, 'mount' => $mountPoint, 'mode' => 'updinfo', 'charset' => 'UTF-8']);
+    $url = 'https://' . $hostName . ':' . $port . '/admin/metadata.xsl?' . http_build_query(['song' => $metadata, 'mount' => $mountPoint, 'mode' => 'updinfo', 'charset' => 'UTF-8']);
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_USERPWD, $username . ':' . $password);
