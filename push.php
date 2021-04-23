@@ -1,6 +1,6 @@
 <?php
 
-$metadata = file_get_contents('http://www.zuidwesttv.nl/teksttv/rds_programma.php');
+$metadata = file_get_contents('http://zuidwestupdate.nl/rds/rds_programma.php');
 $serversPath = __DIR__ . '/servers.csv';
 if(!file_exists($serversPath)) {
     error_log('servers.csv doesn\'t exist');
