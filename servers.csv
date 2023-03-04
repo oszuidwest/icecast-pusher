@@ -1,4 +1,0 @@
-hostname;port;username;password;mountpoint
-icecast.zuidwestfm.nl;80;admin;hackme;/zuidwest.mp3
-icecast.zuidwestfm.nl;80;admin;hackme;/zuidwest.aac
-backupicecast.zuidwestfm.nl;80;admin;hackme;/fallback
