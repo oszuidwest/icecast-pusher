@@ -1,9 +1,8 @@
 <?php
-
 $metadata = file_get_contents('https://www.zuidwestupdate.nl/rds/rds_programma.php');
 
-$icecast_password = getenv('ICECAST_PASSWORD');
-if(empty($icecast_password)) {
+$icecast_password = getenv('ICECAST_PASSWORD') ?? '';
+if (empty($icecast_password)) {
     error_log('ICECAST_PASSWORD is not set');
     exit(64);
 }
@@ -45,14 +44,13 @@ foreach ($servers as $server) {
     if ($responseCode != 200) {
         error_log(sprintf('FAILURE: %s %s -> %d', $server['hostname'], $server['mountpoint'], $responseCode));
         $failure = true;
-    } else
-    {
+    } else {
         echo sprintf('SUCCESS: %s %s -> %d', $server['hostname'], $server['mountpoint'], $responseCode) . "\n";
     }
     curl_close($ch);
 }
 
-if($failure) {
+if ($failure) {
     error_log('One or more requests failed');
     exit(65);
 }

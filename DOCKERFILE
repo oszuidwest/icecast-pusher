@@ -1,0 +1,5 @@
+FROM php:8.1-cli
+
+COPY update_metadata.php /push.php
+
+ENTRYPOINT ["php", "/push.php"]
