@@ -2,7 +2,7 @@ name: Scheduled Update Metadata
 
 on:
   schedule:
-    - cron: '45 * * * *'
+    - cron: '51 * * * *'
 
 jobs:
   update_metadata:
@@ -10,7 +10,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set Timezone
       uses: szenius/set-timezone@v1.1
