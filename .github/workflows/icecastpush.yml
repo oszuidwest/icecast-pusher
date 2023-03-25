@@ -1,0 +1,31 @@
+name: Scheduled Update Metadata
+
+on:
+  schedule:
+    - cron: '30 * * * *'
+
+jobs:
+  update_metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set Timezone
+      uses: szenius/set-timezone@v1.1
+      with:
+        timezoneLinux: "Europe/Amsterdam"
+
+    - name: Build Docker image
+      run: docker build -t update_metadata .
+
+    - name: Execute script with Docker
+      run: |
+        #!/bin/sh
+        # wait for top of the hour
+        while [ "$(date +%M)" != "00" ]; do
+          sleep 1
+        done
+        # update metadata
+        docker run --rm -e ICECAST_PASSWORD=${{ secrets.ICECAST_PASSWORD }} update_metadata
