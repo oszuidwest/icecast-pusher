@@ -2,7 +2,7 @@ name: Scheduled Update Metadata
 
 on:
   schedule:
-    - cron: '51 * * * *'
+    - cron: '45 * * * *'
 
 jobs:
   update_metadata:
