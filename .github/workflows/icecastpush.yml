@@ -1,4 +1,4 @@
-name: Scheduled Update Metadata
+name: Scheduled metadata update
 
 on:
   schedule:
