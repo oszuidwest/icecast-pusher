@@ -3,9 +3,19 @@ addEventListener("fetch", event => {
 });
 
 async function handleRequest(request) {
+  const url = new URL(request.url);
   const response = await fetch("https://www.zuidwestupdate.nl/wp-json/zw/v1/broadcast_data");
   const data = await response.json();
-  const text = data.fm.rds.radiotext;
-  const cleanText = text.replace(/<[^>]*>?/gm, ''); // remove HTML tags
+
+  let displayText;
+  if (url.searchParams.has('ps')) {
+    // If 'ps' query param is present, display program
+    displayText = data.fm.rds.program;
+  } else {
+    // Default to displaying radio text (also for 'rt' query param)
+    displayText = data.fm.rds.radiotext;
+  }
+
+  const cleanText = displayText.replace(/<[^>]*>?/gm, ''); // remove HTML tags
   return new Response(cleanText, { status: 200 });
 }
