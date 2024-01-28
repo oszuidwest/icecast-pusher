@@ -1,4 +1,4 @@
-const ICECAST_SERVERS = [
+constt ICECAST_SERVERS = [
   { hostName: 'icecast.zuidwestfm.nl', port: 80, username: 'admin', password: 'hackme', mountPoint: '/zuidwest.mp3' },
   { hostName: 'icecast.zuidwestfm.nl', port: 80, username: 'admin', password: 'hackme', mountPoint: '/zuidwest.aac' }
   // Add more servers if needed
