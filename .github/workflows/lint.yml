@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.js'
   pull_request:
+    paths:
+      - '**.js'
 
 jobs:
   lint:
@@ -24,4 +28,3 @@ jobs:
 
       - name: Run ESLint
         run: npx eslint . --fix
-
