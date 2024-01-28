@@ -4,7 +4,7 @@ addEventListener('fetch', event => {
 
 async function handleRequest(event) {
   const request = event.request;
-  const cacheUrl = createCacheUrl(new URL(request.url));
+  const cacheUrl = createCacheKey(new URL(request.url));
   const cache = caches.default;
 
   let response = await cache.match(cacheUrl);
@@ -30,7 +30,7 @@ async function handleRequest(event) {
   return new Response(response.body, { status: response.status, headers });
 }
 
-function createCacheUrl(url) {
+function createCacheKey(url) {
   const amsterdamTime = new Date().toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' });
   const formattedTime = new Date(amsterdamTime).toISOString().slice(0, 13).replace(/T/, '-');
   url.searchParams.set('cacheTime', formattedTime);
