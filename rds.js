@@ -4,13 +4,17 @@ addEventListener('fetch', event => {
 
 async function handleRequest(event) {
     const request = event.request;
-    const cacheUrl = createCacheKey(new URL(request.url));
+    const {
+        cacheUrl,
+        cacheBusterValue
+    } = addCacheBuster(new URL(request.url));
     const cache = caches.default;
 
     let response = await cache.match(cacheUrl);
     let headers = new Headers({
         'Content-Type': 'text/plain; charset=utf-8',
-        'X-Robots-Tag': 'noindex, nofollow, noarchive'
+        'X-Robots-Tag': 'noindex, nofollow, noarchive',
+        'X-Cache-Buster': cacheBusterValue // Add cache buster value to headers for debugging
     });
 
     if (!response) {
@@ -29,22 +33,24 @@ async function handleRequest(event) {
         headers.append('X-Cache-Status', 'Hit');
     }
 
-    headers.append('X-Cache-Key', cacheUrl.url);
     return new Response(response.body, {
         status: response.status,
         headers
     });
 }
 
-function createCacheKey(url) {
+function addCacheBuster(url) {
     const amsterdamTime = new Date().toLocaleString('en-US', {
         timeZone: 'Europe/Amsterdam'
     });
-    const formattedTime = new Date(amsterdamTime).toISOString().slice(0, 13).replace(/T/, '-');
-    url.searchParams.set('cacheTime', formattedTime);
-    return new Request(url.toString(), {
-        method: 'GET'
-    });
+    const cacheBusterValue = new Date(amsterdamTime).toISOString().slice(0, 13).replace(/T/, '-');
+    url.searchParams.set('cacheBuster', cacheBusterValue);
+    return {
+        cacheUrl: new Request(url.toString(), {
+            method: 'GET'
+        }),
+        cacheBusterValue
+    };
 }
 
 async function fetchBroadcastData() {
