@@ -1,57 +1,50 @@
 addEventListener("fetch", event => {
-  event.respondWith(handleRequest(event.request, event));
+  event.respondWith(handleRequest(event));
 });
 
-async function handleRequest(request, event) {
-  const url = new URL(request.url);
-  const cacheUrl = new URL(request.url);
-
-  // Append the current hour to the URL as a query parameter for caching
-  cacheUrl.searchParams.set('cacheHour', getCurrentHour());
-
-  const cacheKey = new Request(cacheUrl.toString(), request);
+async function handleRequest(event) {
+  const request = event.request;
+  const cacheKey = createCacheKey(new URL(request.url));
   const cache = caches.default;
 
   let response = await cache.match(cacheKey);
+  let cacheStatus = 'Hit';
+
   if (!response) {
-    // Fetch the data from the remote server
     const fetchResponse = await fetch("https://www.zuidwestupdate.nl/wp-json/zw/v1/broadcast_data");
     const data = await fetchResponse.json();
 
-    let displayText;
-    if (url.searchParams.has('ps')) {
-      displayText = data.fm.rds.program;
-    } else {
-      displayText = data.fm.rds.radiotext;
-    }
+    const content = new URL(request.url).searchParams.has('ps') ? 
+                    data.fm.rds.program.replace(/<[^>]*>?/gm, '') : 
+                    data.fm.rds.radiotext.replace(/<[^>]*>?/gm, '');
 
-    const cleanText = displayText.replace(/<[^>]*>?/gm, '');
-    const headers = new Headers({
-      'Content-Type': 'text/plain; charset=utf-8',
-      'X-Robots-Tag': 'noindex, follow, noarchive',
+    response = new Response(content, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex',
+        'X-Cache-Key': cacheKey.url
+      }
     });
 
-    response = new Response(cleanText, { status: 200, headers: headers });
-
-    // Cache the response
     event.waitUntil(cache.put(cacheKey, response.clone()));
-  } else {
-    // Add status headers to the cached response
-    const newHeaders = new Headers(response.headers);
-    newHeaders.set('X-Cache-Status', 'Hit');
-    newHeaders.set('X-Cache-Key', cacheKey.url);
-
-    response = new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: newHeaders
-    });
+    cacheStatus = 'Miss';
   }
 
-  return response;
+  // Add 'X-Cache-Status' header to the response
+  const newHeaders = new Headers(response.headers);
+  newHeaders.set('X-Cache-Status', cacheStatus);
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: newHeaders
+  });
 }
 
-function getCurrentHour() {
-  const now = new Date();
-  return now.getUTCHours().toString();
+function createCacheKey(url) {
+  const amsterdamTime = new Date().toLocaleString("en-US", { timeZone: "Europe/Amsterdam" });
+  const formattedTime = new Date(amsterdamTime).toISOString().slice(0, 13).replace(/T/, '-');
+  url.searchParams.set('cacheTime', formattedTime);
+  return new Request(url.toString(), { method: 'GET' });
 }
