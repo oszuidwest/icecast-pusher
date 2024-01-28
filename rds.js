@@ -58,7 +58,7 @@ async function fetchBroadcastData () {
   return response.json()
 }
 
-// Function to extract content from the data
+// Function to extract content from json
 function extractContent (url, data) {
   const text = url.searchParams.has('ps')
     ? data.fm.rds.program
