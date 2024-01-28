@@ -17,5 +17,11 @@ async function handleRequest(request) {
   }
 
   const cleanText = displayText.replace(/<[^>]*>?/gm, ''); // remove HTML tags
-  return new Response(cleanText, { status: 200 });
+
+  const headers = {
+    'Content-Type': 'text/plain',
+    'X-Robots-Tag': 'noindex' // Instructs search engines not to index this page
+  };
+
+  return new Response(cleanText, { status: 200, headers: headers });
 }
