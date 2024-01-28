@@ -19,7 +19,7 @@ async function handleRequest(request) {
   const cleanText = displayText.replace(/<[^>]*>?/gm, ''); // remove HTML tags
 
   const headers = {
-    'Content-Type': 'text/plain',
+    'Content-Type': 'text/plain; charset=utf-8',
     'X-Robots-Tag': 'noindex' // Instructs search engines not to index this page
   };
 
