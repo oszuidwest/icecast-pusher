@@ -12,12 +12,12 @@ export default {
 
     // Push to Icecast servers
     let errors = []
-    for(let server of ICECAST_SERVERS){
-      let metadata = {song: song, mount: server.mountPoint, mode: 'updinfo', charset: 'UTF-8'}
-      let requestOptions = {
+    for (let server of ICECAST_SERVERS){
+      const metadata = { song: song, mount: server.mountPoint, mode: 'updinfo', charset: 'UTF-8' }
+      const requestOptions = {
         method: 'GET',
         headers: {
-          'Authorization': 'Basic ' + btoa(server.username + ':' + server.password)
+          Authorization: 'Basic ' + btoa(server.username + ':' + server.password)
         }
       }
 
