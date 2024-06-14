@@ -84,7 +84,6 @@ async function handleRequest (request) {
         'Content-Type': 'text/plain; charset=UTF-8'
       }
     })
-
   } catch (error) {
     console.log(`Error: ${error.message}`)
     return new Response(`Error: ${error.message}`, { status: 500 })
