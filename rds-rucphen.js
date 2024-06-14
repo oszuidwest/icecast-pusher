@@ -2,7 +2,7 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
 
-async function handleRequest(request) {
+async function handleRequest (request) {
   const url = 'https://rucphenrtv.nl/programmering/'
 
   try {
@@ -22,7 +22,7 @@ async function handleRequest(request) {
     console.log(`Current day: ${currentDay}`)
     console.log(`Current time: ${currentHour}`)
 
-    // Refined regular expression to capture the current day's section
+    // Regular expression to capture the current day's section
     const dayRegex = new RegExp(`<a[^>]*class="elementor-accordion-title"[^>]*>\\s*${currentDay}\\s*</a>[\\s\\S]*?<div[^>]*class="elementor-tab-content[^>]*"[^>]*>([\\s\\S]*?)</div>`, 'i')
     const dayMatch = html.match(dayRegex)
 
@@ -84,7 +84,6 @@ async function handleRequest(request) {
         'Content-Type': 'text/plain; charset=UTF-8'
       }
     })
-
   } catch (error) {
     console.log(`Error: ${error.message}`)
     return new Response(`Error: ${error.message}`, { status: 500 })
