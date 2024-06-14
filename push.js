@@ -23,7 +23,7 @@ export default {
 
       const url = `http://${server.hostName}:${server.port}/admin/metadata.xsl?` + new URLSearchParams(metadata)
       const serverResponse = await fetch(url, requestOptions)
-      
+
       if (!serverResponse.ok) {
         errors.push(`Error ${serverResponse.status}: ${serverResponse.statusText} on ${server.hostName}`)
       }
