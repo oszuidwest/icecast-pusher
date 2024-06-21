@@ -2,7 +2,7 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
 
-async function handleRequest(request) {
+async function handleRequest (request) {
   const url = 'https://rucphenrtv.nl/programmering/'
 
   try {
@@ -94,7 +94,7 @@ async function handleRequest(request) {
 }
 
 // Function to decode HTML entities
-function decodeHtmlEntities(str) {
+function decodeHtmlEntities (str) {
   const entities = {
     '&#8211;': '–',
     '&#8217;': "'",
@@ -104,8 +104,8 @@ function decodeHtmlEntities(str) {
     '&lt;': '<',
     '&gt;': '>',
     '&quot;': '"',
-    '&nbsp;': ' ',
-    // Add more entities as needed
+    '&nbsp;': ' '
+    // Add more entities if needed
   }
 
   return str.replace(/&#?\w+;/g, match => entities[match] || match)
