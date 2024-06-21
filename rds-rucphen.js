@@ -2,13 +2,16 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
 
-async function handleRequest (request) {
+async function handleRequest(request) {
   const url = 'https://rucphenrtv.nl/programmering/'
 
   try {
     // Fetch the HTML content from the URL
     const response = await fetch(url)
     const html = await response.text()
+
+    // Decode HTML entities in the fetched HTML
+    const decodedHtml = decodeHtmlEntities(html)
 
     // Get the current time in Europe/Amsterdam timezone
     const now = new Date().toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' })
@@ -24,7 +27,7 @@ async function handleRequest (request) {
 
     // Regular expression to capture the current day's section
     const dayRegex = new RegExp(`<a[^>]*class="elementor-accordion-title"[^>]*>\\s*${currentDay}\\s*</a>[\\s\\S]*?<div[^>]*class="elementor-tab-content[^>]*"[^>]*>([\\s\\S]*?)</div>`, 'i')
-    const dayMatch = html.match(dayRegex)
+    const dayMatch = decodedHtml.match(dayRegex)
 
     if (!dayMatch) {
       console.log('Schedule section not found for today.')
@@ -37,8 +40,8 @@ async function handleRequest (request) {
     // Log the extracted HTML for debugging
     console.log(`Extracted schedule HTML: ${scheduleHtml}`)
 
-    // Decode HTML entities
-    const decodedScheduleHtml = scheduleHtml.replace(/&#8211;/g, '–')
+    // Decode HTML entities in the extracted schedule
+    const decodedScheduleHtml = decodeHtmlEntities(scheduleHtml)
 
     // Regular expression to find program entries
     const programRegex = /(\d{2}:\d{2})\s*–\s*(\d{2}:\d{2})\s*\|\s*([^<\n\r]*)/g
@@ -88,4 +91,22 @@ async function handleRequest (request) {
     console.log(`Error: ${error.message}`)
     return new Response(`Error: ${error.message}`, { status: 500 })
   }
+}
+
+// Function to decode HTML entities
+function decodeHtmlEntities(str) {
+  const entities = {
+    '&#8211;': '–',
+    '&#8217;': "'",
+    '&#8220;': '“',
+    '&#8221;': '”',
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&nbsp;': ' ',
+    // Add more entities as needed
+  }
+
+  return str.replace(/&#?\w+;/g, match => entities[match] || match)
 }
